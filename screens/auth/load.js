@@ -29,7 +29,7 @@ class Load extends React.Component {
     try{
       let state = await AsyncStorage.getItem(USER);
       state = await JSON.parse(state);
-      if(state.isLoggedIn){
+      if(state && state.isLoggedIn){
         this.props.navigation.navigate("App");
         // Show
         return;

@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { USER } from '../../asyncs.js';
 
 import { Container, Text, Input, Form, Item, Content, Label, Button } from 'native-base';
-import { View } from 'react-native';
+import { View, Animated, Easing } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 const password = "asdf1234";
@@ -39,7 +39,18 @@ class AuthScreen extends React.Component {
 
   state = {
     username: "",
-    password: ""
+    password: "",
+    opacity: new Animated.Value(0),
+    offset: new Animated.Value(100)
+  }
+
+  componentDidMount() {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(this.state.opacity, { toValue: 1, duration: 1000 }),
+        Animated.timing(this.state.offset, { toValue: 0, duration: 1500, easing: Easing.elastic() })
+      ])
+    ]).start();
   }
 
   async handlePress(){
@@ -58,6 +69,7 @@ class AuthScreen extends React.Component {
   }
 
   render(){
+    let { opacity, offset } = this.state;
     return (
       <Container>
         <LinearGradient
@@ -66,7 +78,7 @@ class AuthScreen extends React.Component {
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
           >
-          <View style={style.viewcontainer}>
+          <Animated.View style={[style.viewcontainer, { opacity: opacity, paddingBottom: offset }]}>
             <Item floatingLabel>
               <Label style={style.label}>Username</Label>
               <Input
@@ -91,7 +103,7 @@ class AuthScreen extends React.Component {
               >
               <Text>Log in!</Text>
             </Button>
-          </View>
+          </Animated.View>
         </LinearGradient>
 
       </Container>
